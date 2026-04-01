@@ -183,6 +183,7 @@ a { color: inherit; text-decoration: none; }
   transition: opacity 0.2s;
 }
 .month-bar:hover { opacity: 1; }
+.month-bar--vol { background: var(--green); }
 .month-bar-empty { width: 36px; height: 4px; }
 .month-label { font-size: 11px; color: var(--text-dim); font-weight: 600; }
 .month-val { font-size: 10px; color: var(--text-dim); text-align: center; }

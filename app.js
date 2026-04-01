@@ -95,12 +95,13 @@ function getStats() {
 }
 
 function getMonthlyBreakdown(year) {
-  const months = Array.from({ length: 12 }, (_, i) => ({ month: i, earned: 0, paid: 0, count: 0 }));
+  const months = Array.from({ length: 12 }, (_, i) => ({ month: i, earned: 0, paid: 0, volume: 0, count: 0 }));
   state.sales.forEach(sale => {
     const d = new Date(sale.date);
     if (d.getFullYear() !== year) return;
     const m = d.getMonth();
-    months[m].earned += sale.commission || 0;
+    months[m].earned += sale.commission   || 0;
+    months[m].volume += sale.saleAmount   || 0;
     if (sale.status === 'paid') months[m].paid += sale.commission || 0;
     months[m].count++;
   });
@@ -287,6 +288,7 @@ function renderDashboard() {
   const curYear = new Date().getFullYear();
   const monthly = getMonthlyBreakdown(curYear);
   const maxM    = Math.max(...monthly.map(m => m.earned), 1);
+  const maxVol  = Math.max(...monthly.map(m => m.volume), 1);
 
   const unpaid = state.sales
     .filter(s => s.status !== 'paid')
@@ -345,7 +347,7 @@ function renderDashboard() {
 
       <div class="card mt-24">
         <div class="card-header">
-          <h3>${curYear} Monthly Breakdown</h3>
+          <h3>${curYear} Monthly Commission</h3>
           <span class="card-sub">Total: ${fmt(monthly.reduce((s,m)=>s+m.earned,0))}</span>
         </div>
         <div class="monthly-chart">
@@ -358,6 +360,25 @@ function renderDashboard() {
               </div>
               <div class="month-label">${fmtMonth(i)}</div>
               <div class="month-val">${m.earned > 0 ? fmt(m.earned) : '—'}</div>
+            </div>`).join('')}
+        </div>
+      </div>
+
+      <div class="card mt-24">
+        <div class="card-header">
+          <h3>${curYear} Monthly Sales Volume</h3>
+          <span class="card-sub">Total: ${fmt(monthly.reduce((s,m)=>s+m.volume,0))}</span>
+        </div>
+        <div class="monthly-chart">
+          ${monthly.map((m,i) => `
+            <div class="month-col">
+              <div class="month-bar-wrap">
+                ${m.volume > 0
+                  ? `<div class="month-bar month-bar--vol" style="height:${Math.max(4,Math.round((m.volume/maxVol)*120))}px" title="${fmt(m.volume)}"></div>`
+                  : '<div class="month-bar-empty"></div>'}
+              </div>
+              <div class="month-label">${fmtMonth(i)}</div>
+              <div class="month-val">${m.volume > 0 ? fmt(m.volume) : '—'}</div>
             </div>`).join('')}
         </div>
       </div>
