@@ -300,32 +300,40 @@ function renderDashboard() {
         <span class="page-sub">${state.sales.length} total sales recorded</span>
       </div>
 
-      <div class="stats-grid">
+      <div class="stats-grid stats-grid--5">
         <div class="stat-card stat-card--blue">
+          <div class="stat-icon">📦</div>
+          <div class="stat-body">
+            <div class="stat-label">Total Sales Volume</div>
+            <div class="stat-value">${fmt(stats.totalVolume)}</div>
+            <div class="stat-sub">${state.sales.length} sales</div>
+          </div>
+        </div>
+        <div class="stat-card stat-card--purple">
           <div class="stat-icon">💰</div>
           <div class="stat-body">
-            <div class="stat-label">Total Earned</div>
+            <div class="stat-label">Commission Earned</div>
             <div class="stat-value">${fmt(stats.totalEarned)}</div>
-            <div class="stat-sub">All-time commission</div>
+            <div class="stat-sub">All-time</div>
           </div>
         </div>
         <div class="stat-card stat-card--green">
           <div class="stat-icon">✅</div>
           <div class="stat-body">
-            <div class="stat-label">Total Paid</div>
+            <div class="stat-label">Commission Paid</div>
             <div class="stat-value">${fmt(stats.totalPaid)}</div>
-            <div class="stat-sub">${state.sales.filter(s=>s.status==='paid').length} payments received</div>
+            <div class="stat-sub">${state.sales.filter(s=>s.status==='paid').length} payments</div>
           </div>
         </div>
         <div class="stat-card stat-card--yellow">
           <div class="stat-icon">⏳</div>
           <div class="stat-body">
-            <div class="stat-label">Pending</div>
+            <div class="stat-label">Commission Pending</div>
             <div class="stat-value">${fmt(stats.totalPending)}</div>
             <div class="stat-sub">${state.sales.filter(s=>s.status!=='paid').length} outstanding</div>
           </div>
         </div>
-        <div class="stat-card stat-card--purple">
+        <div class="stat-card stat-card--blue">
           <div class="stat-icon">📅</div>
           <div class="stat-body">
             <div class="stat-label">This Month</div>
