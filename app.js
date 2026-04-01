@@ -386,6 +386,7 @@ function renderDashboard() {
                   <td class="action-cell">
                     ${s.status==='unpaid'    ? `<button class="btn btn-xs btn-outline" data-request="${s.id}">Request</button>` : ''}
                     ${s.status==='requested' ? `<button class="btn btn-xs btn-green"   data-mark-paid="${s.id}">Mark Paid</button>` : ''}
+                    ${s.status==='requested' ? `<button class="btn btn-xs btn-danger"  data-unrequest="${s.id}">Undo</button>` : ''}
                   </td>
                 </tr>`).join('')}
             </tbody>
@@ -655,6 +656,14 @@ function bindApp() {
     btn.addEventListener('click', async () => {
       const sale = state.sales.find(s => s.id === btn.dataset.request);
       if (sale) await updateSale(sale.id, { ...sale, status: 'requested', dateRequested: today() });
+    })
+  );
+
+  // Undo request
+  document.querySelectorAll('[data-unrequest]').forEach(btn =>
+    btn.addEventListener('click', async () => {
+      const sale = state.sales.find(s => s.id === btn.dataset.unrequest);
+      if (sale) await updateSale(sale.id, { ...sale, status: 'unpaid', dateRequested: null });
     })
   );
 
