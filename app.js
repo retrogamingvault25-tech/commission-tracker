@@ -24,6 +24,8 @@ const state = {
   search: '',
   filterStatus: 'all',
   filterYear: 'all',
+  filterFrom: '',
+  filterTo: '',
   sortField: 'date',
   sortDir: 'desc',
 };
@@ -468,6 +470,8 @@ function renderSales() {
   }
   if (state.filterStatus !== 'all') sales = sales.filter(s => s.status === state.filterStatus);
   if (state.filterYear   !== 'all') sales = sales.filter(s => new Date(s.date).getFullYear() === parseInt(state.filterYear));
+  if (state.filterFrom) sales = sales.filter(s => s.date >= state.filterFrom);
+  if (state.filterTo)   sales = sales.filter(s => s.date <= state.filterTo);
 
   sales.sort((a,b) => {
     let av = a[state.sortField], bv = b[state.sortField];
@@ -505,6 +509,9 @@ function renderSales() {
           <option value="all" ${state.filterYear==='all'?'selected':''}>All Years</option>
           ${years.map(y=>`<option value="${y}" ${state.filterYear===String(y)?'selected':''}>${y}</option>`).join('')}
         </select>
+        <input type="date" class="input date-filter" id="from-date" value="${state.filterFrom}" title="From date">
+        <input type="date" class="input date-filter" id="to-date"   value="${state.filterTo}"   title="To date">
+        ${state.filterFrom || state.filterTo ? `<button class="btn btn-ghost btn-sm" id="clear-dates">✕ Clear</button>` : ''}
         <button class="btn btn-ghost btn-sm" id="import-csv-btn">📁 Import CSV</button>
       </div>
 
@@ -720,6 +727,9 @@ function bindApp() {
   document.getElementById('search-input')?.addEventListener('input', e => { state.search = e.target.value; render(); });
   document.getElementById('status-filter')?.addEventListener('change', e => { state.filterStatus = e.target.value; render(); });
   document.getElementById('year-filter')?.addEventListener('change',   e => { state.filterYear   = e.target.value; render(); });
+  document.getElementById('from-date')?.addEventListener('change', e => { state.filterFrom = e.target.value; render(); });
+  document.getElementById('to-date')?.addEventListener('change',   e => { state.filterTo   = e.target.value; render(); });
+  document.getElementById('clear-dates')?.addEventListener('click', () => { state.filterFrom = ''; state.filterTo = ''; render(); });
 
   // Sort
   document.querySelectorAll('[data-sort]').forEach(th =>
